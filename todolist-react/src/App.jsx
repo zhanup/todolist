@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react'
 import Header from './components/Header'
 import List from './components/List'
 import Footer from './components/Footer'
@@ -12,40 +12,42 @@ const App = () => {
   ])
 
   // addTodo用添加一个todo，接收的参数是todo对象
-  const addTodo = (todoObj) => {
-    setTodos([...todos, todoObj]);
-  }
+  const addTodo = useCallback((todoObj) => {
+    setTodos((todos) => [...todos, todoObj])
+  }, [])
 
   // updateTodo用于更新一个todo对象
-  const updateTodo = (id, done) => {
-    const newTodos = todos.map(item => item.id === id ? {...item, done} : item)
-    setTodos(newTodos)
-  }
+  const updateTodo = useCallback((id, done) => {
+    setTodos((todos) =>
+      todos.map((item) => (item.id === id ? { ...item, done } : item))
+    )
+  }, [])
 
   // deleteTodo用于删除一个todo对象
-  const deleteTodo = (id) => {
-    const newTodos = todos.filter(item => item.id !== id)
-    setTodos(newTodos)
-  }
+  const deleteTodo = useCallback((id) => {
+    setTodos((todos) => todos.filter((item) => item.id !== id))
+  }, [])
 
   // checkAllTodo用于全选
-  const checkAllTodo = (done) => {
-    const newTodos = todos.map(item => ({...item, done}))
-    setTodos(newTodos)
-  }
+  const checkAllTodo = useCallback((done) => {
+    setTodos((todos) => todos.map((item) => ({ ...item, done })))
+  }, [])
 
   // clearAllDone清除所有已完成
-  const clearAllDone = () => {
-    const newTodos = todos.filter(item => item.done === false)
-    setTodos(newTodos)
-  }
+  const clearAllDone = useCallback(() => {
+    setTodos((todos) => todos.filter((item) => item.done === false))
+  }, [])
 
   return (
-    <div className="todo-container">
-      <div className="todo-wrap">
-        <Header addTodo={addTodo}  />
+    <div className='todo-container'>
+      <div className='todo-wrap'>
+        <Header addTodo={addTodo} />
         <List todos={todos} updateTodo={updateTodo} deleteTodo={deleteTodo} />
-        <Footer todos={todos} checkAllTodo={checkAllTodo} clearAllDone={clearAllDone} />
+        <Footer
+          todos={todos}
+          checkAllTodo={checkAllTodo}
+          clearAllDone={clearAllDone}
+        />
       </div>
     </div>
   )
