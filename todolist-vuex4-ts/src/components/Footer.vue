@@ -13,50 +13,29 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType  } from 'vue'
-import { Todo } from '../types'
+import { defineComponent, computed  } from 'vue'
+import { useStore } from '@/store'
+import { CHECK_ALL_TODO, CLEAR_ALL_DONE } from '../store/mutation-types'
 
 export default defineComponent({
   name: 'Footer',
-  props: {
-    todos: {
-      type: Array as PropType<Todo[]>,
-      default: () => []
-    }
-  },
-  setup(props, context) {
-    const todos = props.todos
-
-    // 任务总数
-    const total = computed<number>(() => todos.length)
-
-    // 完成的任务
-    const doneCount = computed<number>(() => {
-      return todos.reduce((pre, current) => {
-        return pre + (current.done ? 1 : 0)
-      }, 0)
-    })
-
-    // 是否选中
-    const isChecked = computed<boolean>(() => {
-      return doneCount.value === total.value && total.value !== 0
-    })
+  setup() {
+    const store = useStore()
 
     //全选checkbox的回调
     const handleCheackAll = ($event: any) => {
-      context.emit('checkAllTodo', $event.target.checked)
+      store.commit(CHECK_ALL_TODO, $event.target.checked)
     }
 
     // 清除所有已完成
     const handleCLearAllDone = () => {
-      context.emit('clearAllDone')
+      store.commit(CLEAR_ALL_DONE)
     }
     
     return {
-      todos,
-      total,
-      doneCount,
-      isChecked,
+      total: computed(() => store.getters.total),
+      doneCount: computed(() => store.getters.doneCount),
+      isChecked: computed(() => store.getters.isChecked),
       handleCheackAll,
       handleCLearAllDone
     }
