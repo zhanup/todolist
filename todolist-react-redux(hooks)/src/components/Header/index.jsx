@@ -6,7 +6,7 @@ import './index.css'
 
 const Header = () => {
   const dispatch = useDispatch()
-  
+
   const handleKeyUp = (event) => {
     const { keyCode, target } = event
     // 判断是否是回车
@@ -15,7 +15,7 @@ const Header = () => {
       alert('输入不能为空')
       return
     }
-    const todoObj = {id: nanoid(), name: target.value, done: false }
+    const todoObj = { id: nanoid(), name: target.value, done: false }
     dispatch(addTodo(todoObj))
     target.value = ''
   }
